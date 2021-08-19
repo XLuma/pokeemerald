@@ -4875,6 +4875,8 @@ static void RunTurnActionsFunctions(void)
 
 static void HandleEndTurn_BattleWon(void)
 {
+    s32 i;
+    i = 0;
     gCurrentActionFuncId = 0;
 
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
@@ -4926,6 +4928,13 @@ static void HandleEndTurn_BattleWon(void)
     else
     {
         gBattlescriptCurrInstr = BattleScript_PayDayMoneyAndPickUpItems;
+    }
+    if ( gBattleTypeFlags & BATTLE_TYPE_TRAINER ){
+        *gPlayerParty = *gEnemyParty;
+        for (i=0;i<PARTY_SIZE;i++){
+            u16 hpval = GetMonData(&gPlayerParty[i], MON_DATA_MAX_HP);
+            SetMonData(&gPlayerParty[i], MON_DATA_HP, &hpval);
+        }
     }
 
     gBattleMainFunc = HandleEndTurn_FinishBattle;
