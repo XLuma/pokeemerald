@@ -4683,9 +4683,9 @@ static void RunTurnActionsFunctions(void)
 static void HandleEndTurn_BattleWon(void)
 {
     s32 i;
+    u8 level;
     u16 hpval;
-    u32 otId;
-    u8 otName[12];
+    u16 species;
     i = 0;
     gCurrentActionFuncId = 0;
 
@@ -4740,11 +4740,11 @@ static void HandleEndTurn_BattleWon(void)
         gBattlescriptCurrInstr = BattleScript_PayDayMoneyAndPickUpItems;
     }
     if ( gBattleTypeFlags & BATTLE_TYPE_TRAINER ){
-        //*gPlayerParty = *gEnemyParty;
-        otId = GetMonData(&gPlayerParty[0], MON_DATA_OT_ID);
-        //GetMonData(&gPlayerParty[0], MON_DATA_OT_NAME, otName);
         for (i=0;i<PARTY_SIZE;i++){
-            gPlayerParty[i] = gEnemyParty[i];
+           // gPlayerParty[i] = gEnemyParty[i];
+            species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES);
+            level = GetMonData(&gEnemyParty[i], MON_DATA_LEVEL);
+            CreateMon(&gPlayerParty[i], species, level, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
             hpval = GetMonData(&gPlayerParty[i], MON_DATA_MAX_HP);
             SetMonData(&gPlayerParty[i], MON_DATA_HP, &hpval);
             SetMonData(&gPlayerParty[i], MON_DATA_OT_NAME, gSaveBlock2Ptr->playerName);
