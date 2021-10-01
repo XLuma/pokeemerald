@@ -1259,6 +1259,9 @@ static void Task_GiveExpToMon(u8 taskId)
     u32 monId = (u8)(gTasks[taskId].tExpTask_monId);
     u8 battlerId = gTasks[taskId].tExpTask_battler;
     s32 gainedExp = GetTaskExpValue(taskId);
+    u16 hp;
+
+    hp = 1;
 
     if (IsDoubleBattle() == TRUE || monId != gBattlerPartyIndexes[battlerId]) // Give exp without moving the expbar.
     {
@@ -1273,7 +1276,10 @@ static void Task_GiveExpToMon(u8 taskId)
             u8 savedActiveBattler;
 
             SetMonData(mon, MON_DATA_EXP, &nextLvlExp);
+            //Set 1hp on levelup with no hp bar, for astroid
             CalculateMonStats(mon);
+            SetMonData(mon, MON_DATA_MAX_HP, &hp);
+            SetMonData(mon, MON_DATA_HP, &hp);
             gainedExp -= nextLvlExp - currExp;
             savedActiveBattler = gActiveBattler;
             gActiveBattler = battlerId;
@@ -1331,6 +1337,9 @@ static void Task_GiveExpWithExpBar(u8 taskId)
         s32 gainedExp = GetTaskExpValue(taskId);
         u8 battlerId = gTasks[taskId].tExpTask_battler;
         s32 newExpPoints;
+        u16 hp;
+
+        hp = 1;
 
         newExpPoints = MoveBattleBar(battlerId, gHealthboxSpriteIds[battlerId], EXP_BAR, 0);
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[battlerId]);
@@ -1353,6 +1362,9 @@ static void Task_GiveExpWithExpBar(u8 taskId)
 
                 SetMonData(&gPlayerParty[monId], MON_DATA_EXP, &expOnNextLvl);
                 CalculateMonStats(&gPlayerParty[monId]);
+                //Set 1hp on levelup, for astroid
+                SetMonData(&gPlayerParty[monId], MON_DATA_HP, &hp);
+                SetMonData(&gPlayerParty[monId], MON_DATA_MAX_HP, &hp);
                 gainedExp -= expOnNextLvl - currExp;
                 savedActiveBattler = gActiveBattler;
                 gActiveBattler = battlerId;

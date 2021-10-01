@@ -317,6 +317,9 @@ static void Task_GiveExpToMon(u8 taskId)
     u32 monId = (u8)(gTasks[taskId].tExpTask_monId);
     u8 battlerId = gTasks[taskId].tExpTask_bank;
     s16 gainedExp = gTasks[taskId].tExpTask_gainedExp;
+    u16 hp;
+
+    hp = 1;
 
     if (IsDoubleBattle() == TRUE || monId != gBattlerPartyIndexes[battlerId]) // give exp without the expbar
     {
@@ -331,7 +334,10 @@ static void Task_GiveExpToMon(u8 taskId)
             u8 savedActiveBank;
 
             SetMonData(mon, MON_DATA_EXP, &nextLvlExp);
+            //Idk why its also here, but lets do it too, for astroid
             CalculateMonStats(mon);
+            SetMonData(mon, MON_DATA_HP, &hp);
+            SetMonData(mon, MON_DATA_MAX_HP, &hp);
             gainedExp -= nextLvlExp - currExp;
             savedActiveBank = gActiveBattler;
             gActiveBattler = battlerId;
@@ -398,6 +404,9 @@ static void Task_GiveExpWithExpBar(u8 taskId)
             s32 currExp;
             u16 species;
             s32 expOnNextLvl;
+            u16 hp;
+
+            hp = 1;
 
             m4aSongNumStop(SE_EXP);
             level = GetMonData(&gPlayerParty[monId], MON_DATA_LEVEL);
@@ -411,6 +420,9 @@ static void Task_GiveExpWithExpBar(u8 taskId)
 
                 SetMonData(&gPlayerParty[monId], MON_DATA_EXP, &expOnNextLvl);
                 CalculateMonStats(&gPlayerParty[monId]);
+                //Same thing but no exp bar, for astroid
+                SetMonData(&gPlayerParty[monId], MON_DATA_MAX_HP, &hp);
+                SetMonData(&gPlayerParty[monId], MON_DATA_HP, &hp);
                 gainedExp -= expOnNextLvl - currExp;
                 savedActiveBank = gActiveBattler;
                 gActiveBattler = battlerId;
